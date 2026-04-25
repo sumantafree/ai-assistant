@@ -1,0 +1,70 @@
+{
+  "name": "ai-assistant-desktop",
+  "version": "1.0.0",
+  "description": "AI Desktop Assistant",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder --win",
+    "build:dir": "electron-builder --win --dir"
+  },
+  "build": {
+    "appId": "com.aiassistant.desktop",
+    "productName": "AI Desktop Assistant",
+    "copyright": "Copyright © 2025",
+    "directories": {
+      "output": "../dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AI Desktop Assistant",
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico",
+      "deleteAppDataOnUninstall": false,
+      "include": "installer.nsh"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../backend-dist/ai-assistant-backend.exe",
+        "to": "backend/ai-assistant-backend.exe"
+      },
+      {
+        "from": "../backend/.env",
+        "to": "backend/.env"
+      },
+      {
+        "from": "../frontend-dist",
+        "to": "frontend"
+      }
+    ]
+  },
+  "dependencies": {
+    "electron-log": "^5.1.2",
+    "electron-store": "^9.0.0"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}

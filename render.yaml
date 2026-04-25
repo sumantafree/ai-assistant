@@ -1,0 +1,66 @@
+## render.yaml — defines all Render.com services
+## Commit this file to your GitHub repo, then connect on render.com
+
+services:
+  # ── Backend (FastAPI) ────────────────────────────────────────────
+  - type: web
+    name: ai-assistant-backend
+    runtime: python
+    rootDir: .
+    buildCommand: >
+      pip install -r backend/requirements.txt
+    startCommand: >
+      cd backend &&
+      python -c "
+      import sys; sys.path.insert(0,'..'); sys.path.insert(0,'../ai-agents');
+      sys.path.insert(0,'../automation'); sys.path.insert(0,'../database');
+      sys.path.insert(0,'../voice');
+      from database.db import engine;
+      from database import models;
+      models.Base.metadata.create_all(bind=engine);
+      print('DB tables created')
+      " &&
+      uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHONPATH
+        value: .
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "1440"
+      - key: GEMINI_API_KEY
+        sync: false          # set manually in Render dashboard
+      - key: DATABASE_URL
+        sync: false          # paste Supabase connection string here
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false          # e.g. https://app.yourdomain.com,https://ai-assistant-frontend.onrender.com
+      - key: DEBUG
+        value: "false"
+    healthCheckPath: /health
+
+  # ── Frontend (Next.js) ───────────────────────────────────────────
+  - type: web
+    name: ai-assistant-frontend
+    runtime: node
+    rootDir: frontend
+    buildCommand: npm install --legacy-peer-deps && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        sync: false          # e.g. https://ai-assistant-backend.onrender.com
+      - key: PORT
+        value: "3000"
+      - key: NODE_ENV
+        value: production

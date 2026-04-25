@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+*.egg-info/
+dist/
+build/
+*.spec
+backend/dist/
+backend/build/
+
+# Environment
+.env
+*.env.local
+*.env.production
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Node
+node_modules/
+.next/
+frontend/.next/
+frontend/out/
+desktop/dist/
+
+# Build output
+/dist/
+/backend-dist/
+/frontend-dist/
+/portable-build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
