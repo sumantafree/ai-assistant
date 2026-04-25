@@ -31,6 +31,34 @@ from database import models
 # Create all DB tables on startup
 models.Base.metadata.create_all(bind=engine)
 
+# Auto-seed admin user on first deploy
+def seed_admin():
+    try:
+        from database.db import SessionLocal
+        from database.models import User
+        import bcrypt
+        db = SessionLocal()
+        existing = db.query(User).filter(User.username == "admin").first()
+        if not existing:
+            hashed = bcrypt.hashpw(b"admin123", bcrypt.gensalt()).decode()
+            user = User(
+                username="admin",
+                email="admin@example.com",
+                hashed_password=hashed,
+                full_name="Admin User",
+                is_active=True,
+            )
+            db.add(user)
+            db.commit()
+            print("✅ Admin user seeded: admin / admin123")
+        else:
+            print("ℹ️  Admin user already exists")
+        db.close()
+    except Exception as e:
+        print(f"⚠️  Seed skipped: {e}")
+
+seed_admin()
+
 app = FastAPI(
     title=settings.APP_NAME,
     version="1.0.0",
