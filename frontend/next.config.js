@@ -1,7 +1,15 @@
 /** @type {import('next').NextConfig} */
+const path = require("path");
+
 const nextConfig = {
   reactStrictMode: true,
   output: "standalone",
+
+  webpack: (config) => {
+    // Ensure @/ alias works on all platforms (Linux/Render)
+    config.resolve.alias["@"] = path.resolve(__dirname, "src");
+    return config;
+  },
 
   // In production NEXT_PUBLIC_API_URL is set via Render env vars
   // In development it falls back to localhost:8000
